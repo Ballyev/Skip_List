@@ -1,23 +1,19 @@
 CXX = g++
-CXXFLAGS = -std=c++11 -Wall -Wextra
+CXXFLAGS = -Iinclude -Wall -Wextra -std=c++17 -pthread
 TEST_SRC = test/skip_list_test.cpp
-TEST_EXE = test/skip_list_test
+TEST_EXE = test_skip_list
+
+GTEST_LIBS = -lgtest -lgtest_main -lpthread
 
 .PHONY: all test clean
 
 all: test
 
 test: $(TEST_EXE)
-	@echo "Running tests..."
-	@./$(TEST_EXE) || (echo "Tests failed"; exit 1)
+	./$(TEST_EXE)
 
-$(TEST_EXE): $(TEST_SRC)
-	@mkdir -p bin
-	@if [ ! -f $(TEST_SRC) ]; then \
-		echo "Error: Test file $(TEST_SRC) not found"; \
-		exit 1; \
-	fi
-	$(CXX) $(CXXFLAGS) $(TEST_SRC) -o $(TEST_EXE)
+$(TEST_EXE): $(TEST_SRC) include/skip_list.h
+	$(CXX) $(CXXFLAGS) $(TEST_SRC) -o $(TEST_EXE) $(GTEST_LIBS)
 
 clean:
-	rm -rf bin
+	rm -f $(TEST_EXE)
