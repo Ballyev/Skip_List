@@ -1,4 +1,4 @@
-name: C++ CI (Makefile)
+name: C++ CI
 
 on: [push, pull_request]
 
@@ -8,16 +8,22 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Checkout tests branch
+        run: |
+          git fetch origin tests:tests  
+          git checkout tests -- test/   
+          git checkout -  
 
       - name: Install dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y build-essential g++
 
-      - name: Build with Make
-        run: |
-          make all      # Или ваша конкретная цель сборки
+      - name: Build
+        run: make all
 
       - name: Run tests
-        run: |
-          make test    # Если у вас есть тесты
+        run: make test
