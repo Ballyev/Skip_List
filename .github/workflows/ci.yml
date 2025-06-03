@@ -7,18 +7,23 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-          ref: ${{ github.head_ref || github.ref }}
+      - uses: actions/checkout@v4
 
-      - name: Fetch tests branch
+      - name: Check for tests branch
+        id: check-branch
         run: |
-          git config --global user.email "ci@example.com"
-          git config --global user.name "CI"
+          if git ls-remote --exit-code --heads origin tests; then
+            echo "tests_branch_exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "tests_branch_exists=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Fetch tests (if branch exists)
+        if: steps.check-branch.outputs.tests_branch_exists == 'true'
+        run: |
           git fetch origin tests
           git checkout tests -- test/
-          git reset test/
+          git reset -- test/
 
       - name: Install dependencies
         run: |
@@ -29,10 +34,5 @@ jobs:
         run: make all
 
       - name: Run tests
-        run: |
-          if [ -f "test/skip_list_test.cpp" ]; then
-            make test
-          else
-            echo "Test files not found, skipping tests"
-            exit 0
-          fi
+        if: steps.check-branch.outputs.tests_branch_exists == 'true'
+        run: make test
