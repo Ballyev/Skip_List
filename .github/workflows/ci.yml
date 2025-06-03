@@ -12,14 +12,14 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y g++ make libgtest-dev
+          sudo apt-get install -y g++ make cmake libgtest-dev
 
-      - name: Build GTest
+      - name: Build and install GTest
         run: |
-          cd /usr/src/gtest
-          sudo cmake CMakeLists.txt
-          sudo make
-          sudo cp *.a /usr/lib
+          cd /usr/src/googletest
+          sudo cmake -B build -DCMAKE_BUILD_TYPE=Release
+          sudo cmake --build build
+          sudo cmake --install build
 
       - name: Run make
         run: make
