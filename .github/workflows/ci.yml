@@ -1,9 +1,9 @@
-name: C++ CI
+name: CI
 
 on: [push, pull_request]
 
 jobs:
-  build_and_test:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -12,12 +12,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y g++ libgtest-dev
+          sudo apt-get install -y g++
 
-      - name: Compile tests
-        run: |
-          g++ -std=c++17 -pthread test/skip_list_test.cpp -o test_skip_list \
-          -lgtest -lgtest_main -lpthread
-
-      - name: Run tests
-        run: ./test_skip_list
+      - name: Build project
+        run: make

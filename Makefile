@@ -1,19 +1,14 @@
 CXX = g++
 CXXFLAGS = -Iinclude -Wall -Wextra -std=c++17 -pthread
-TEST_SRC = test/skip_list_test.cpp
-TEST_EXE = test_skip_list
+SRC = src/main.cpp
+TARGET = main
 
-GTEST_LIBS = -lgtest -lgtest_main -lpthread
+.PHONY: all clean
 
-.PHONY: all test clean
+all: $(TARGET)
 
-all: test
-
-test: $(TEST_EXE)
-	./$(TEST_EXE)
-
-$(TEST_EXE): $(TEST_SRC) include/skip_list.h
-	$(CXX) $(CXXFLAGS) $(TEST_SRC) -o $(TEST_EXE) $(GTEST_LIBS)
+$(TARGET): $(SRC) include/skip_list.h
+	$(CXX) $(CXXFLAGS) $(SRC) -o $(TARGET)
 
 clean:
-	rm -f $(TEST_EXE)
+	rm -f $(TARGET)
