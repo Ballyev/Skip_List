@@ -3,23 +3,21 @@ name: C++ CI
 on: [push, pull_request]
 
 jobs:
-  build-and-test:
+  build_and_test:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y g++ make cmake libgtest-dev
+          sudo apt-get install -y g++ libgtest-dev
 
-      - name: Build and install GTest
+      - name: Compile tests
         run: |
-          cd /usr/src/googletest
-          sudo cmake -B build -DCMAKE_BUILD_TYPE=Release
-          sudo cmake --build build
-          sudo cmake --install build
+          g++ -std=c++17 -pthread test/skip_list_test.cpp -o test_skip_list \
+          -lgtest -lgtest_main -lpthread
 
-      - name: Run make
-        run: make
+      - name: Run tests
+        run: ./test_skip_list
