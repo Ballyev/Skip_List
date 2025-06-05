@@ -11,3 +11,5 @@ make
 make test
 #Run
 make build
+#License
+This project is distributed under the [MIT] LICENSE.  
